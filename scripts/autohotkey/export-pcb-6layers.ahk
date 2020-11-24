@@ -111,7 +111,7 @@ WinWaitActive, %tt%
 SendInput, {Blind} !n
 Sleep, 500
 ;SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic-modified.asc {Enter}
-SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%.dch {Enter}
+SendInput, {Blind} %SCH_FILE% {Enter}
 
 
 tt = Schematic
@@ -166,7 +166,7 @@ SendInput, {Blind} !fid
 tt = Open
 WinWaitActive, %tt%
 ;SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout-modified.asc {Enter}
-SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%.dip {Enter}
+SendInput, {Blind} %PCB_FILE% {Enter}
 
 WinWaitClose, %tt%
 
