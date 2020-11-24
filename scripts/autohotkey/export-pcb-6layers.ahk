@@ -4,28 +4,166 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 DIPTRACE_PCB_PATH = C:\Program Files\DipTrace\Pcb.exe
+DIPTRACE_SCHEMATIC_PATH = C:\Program Files\DipTrace\Schematic.exe
+KICAD_PATH = C:\Program Files\KiCad\bin\kicad.exe
+
 PCB_FILE = %1% ;C:\world\dev\diptrace-ahk\MY_PROJECT_DIR\MY_PCB_FILE.dip
-EXPORT_DIR = %2% ;C:\world\dev\diptrace-ahk\MY_EXPORT_DIR
-LZX_PROJECT_NAME = %3% ;MYPROJECT
-LZX_PROJECT_VERSION = %4% ;RevA
+SCH_FILE = %2%
+EXPORT_DIR = %3% ;C:\world\dev\diptrace-ahk\MY_EXPORT_DIR
+LZX_PROJECT_NAME = %4% ;MYPROJECT
+LZX_PROJECT_VERSION = %5% ;RevA
+SRC_DIR = %6%
 
 Loop, 1
 {
-; Launch Diptrace
-Run, %DIPTRACE_PCB_PATH%
 
+FileCreateDir, %EXPORT_DIR%\kicad
+FileCreateDir, %EXPORT_DIR%\eagle
+
+; MsgBox, %PCB_FILE%
+; MsgBox, %SCH_FILE%
+; MsgBox, %EXPORT_DIR%
+; MsgBox, %LZX_PROJECT_NAME%
+; MsgBox, %LZX_PROJECT_VERSION%
+
+; Launch Diptrace PCB & Export PCB ASCII
+Run, %DIPTRACE_PCB_PATH%
 SetTitleMatchMode, 2
 CoordMode, Mouse, Window
 
 tt = PCB Layout
 WinWaitActive, %tt%
 SendInput, {Blind} !fo
-
 tt = Open
 WinWaitActive, %tt%
 SendInput, {Blind} %PCB_FILE% {Enter}
+tt = PCB Layout
+WinWaitActive, %tt%
+SendInput, {Blind} !fxd
+tt = Save As
+WinWaitActive, %tt%
+SendInput, {Blind} {BackSpace} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout.asc!s
+Sleep, 2000
+SendInput, {Blind} {Enter}
+WinWaitClose, %tt%
+tt = PCB Layout
+WinWaitActive, %tt%
+WinClose, %tt%
+Sleep, 100
+SendInput, {Blind} {Enter}
+Sleep, 1000
 
-tt = PCB Layout - [%PCB_FILE%]
+; Sleep, 2000
+
+; Launch Diptrace Schematic & Export Schematic ASCII
+Run, %DIPTRACE_SCHEMATIC_PATH%
+Sleep, 1000
+
+tt = Schematic
+WinWaitActive, %tt%
+Sleep, 1000
+SendInput, {Blind} !fo
+
+tt = Open
+WinWaitActive, %tt%
+Sleep, 1000
+SendInput, {Blind} %SCH_FILE% {Enter}
+
+tt = Schematic
+WinWaitActive, %tt%
+SendInput, {Blind} !fxd 
+tt = Save As
+WinWaitActive, %tt%
+SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic.asc!s
+Sleep, 2000
+SendInput, {Blind} {Enter}
+WinWaitClose, %tt%
+
+tt = Schematic
+WinWaitActive, %tt%
+SendInput, {Blind} !fe
+
+Sleep, 2000
+SendInput, {Blind} {Enter}
+Sleep, 2000
+FileRead, SchematicASCII, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic.asc
+StringReplace, SchematicASCIIM, SchematicASCII, LZXNAME, %LZX_PROJECT_NAME%, All
+StringReplace, SchematicASCIIM, SchematicASCIIM, LZXVERSION, %LZX_PROJECT_VERSION%, All
+FileDelete, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic-modified.asc
+FileAppend, %SchematicASCIIM%, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic-modified.asc
+FileRead, PCBASCII, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout.asc
+StringReplace, PCBASCIIM, PCBASCII, LZXNAME, %LZX_PROJECT_NAME%, All
+StringReplace, PCBASCIIM, PCBASCIIM, LZXVERSION, %LZX_PROJECT_VERSION%, All
+FileDelete, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout-modified.asc
+FileAppend, %PCBASCIIM%, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout-modified.asc
+Sleep, 2000
+; Re-Import ASCII Schematic
+Run, %DIPTRACE_SCHEMATIC_PATH%
+Sleep, 2000
+tt = Schematic
+WinWaitActive, %tt%  
+SendInput, {Blind} !fid 
+Sleep, 2000
+tt = Open
+WinWaitActive, %tt%
+SendInput, {Blind} !n
+Sleep, 500
+SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic-modified.asc {Enter}
+
+tt = Schematic
+WinWaitActive, %tt%
+SendInput, {Blind} !fxe
+
+tt = Save As
+WinWaitActive, %tt%
+SendInput, {Blind} %EXPORT_DIR%\eagle\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%.sch!s
+Sleep, 1500
+SendInput, {Blind} {Enter}
+WinWaitClose, %tt%
+
+tt = Schematic
+WinWaitActive, %tt%
+SendInput, {Blind} !ob
+
+tt = Create Bill
+WinWaitActive, %tt%
+SendInput, {Blind} {Tab 15} {Enter}
+
+tt = Save As
+WinWaitActive, %tt%
+SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-bom.csv!s
+
+tt = CSV Column Divider
+WinWaitActive, %tt%
+SendInput, {Blind} {Enter}
+
+tt = Schematic
+WinWaitActive, %tt%
+SendInput, {Blind} !fe
+Sleep, 500
+SendInput, {Blind} n
+Sleep, 500
+SendInput, {Blind} {Tab 3} {Enter}
+WinWaitClose, %tt%
+; SendInput, {Blind} !fe
+
+; tt = Confirm
+; WinWaitActive, %tt%
+; SendInput, {Blind} n
+
+; Launch Diptrace PCB & Import PCB ASCII
+Run, %DIPTRACE_PCB_PATH%
+
+tt = PCB Layout
+WinWaitActive, %tt%
+SendInput, {Blind} !fid
+
+tt = Open
+WinWaitActive, %tt%
+SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout-modified.asc {Enter}
+WinWaitClose, %tt%
+
+tt = PCB Layout
 WinWaitActive, %tt%
 SendInput, {Blind} !fxg
 
@@ -136,70 +274,101 @@ SendInput, {Blind} {Enter}
 tt = Save As
 WinWaitActive, %tt%
 SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-xy-placement-data.csv!s
-Sleep, 500
+Sleep, 1500
 SendInput, {Blind} {Enter}
 WinWaitClose, %tt%
 
-; tt = Pick and Place Report'
+; tt = PCB Layout
 ; WinWaitActive, %tt%
-; WinClose, %tt%
+; SendInput, {Blind} !t33
+
+; tt = 3D Preview
+; WinWaitActive, %tt%
+; SendInput, {Blind} {Tab 5} {Enter}
+
+; tt = Export Step 3D
+; WinWaitActive, %tt%
+; SendInput, {Blind} {Tab 5} {Enter}
+
+; tt = Save As
+; WinWaitActive, %tt%
+; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-model3d.stp {Enter}
 ; WinWaitClose, %tt%
 
+; tt = 3D Preview
+; WinWaitActive, %tt%
+; SendInput, {Blind} {Tab 8} {Enter}
 
+tt = PCB Layout
+WinWaitActive, %tt%
+SendInput, {Blind} !fxa
 
+tt = Save As
+WinWaitActive, %tt%
+SendInput, {Blind} %EXPORT_DIR%\eagle\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%.brd!s
+WinWaitClose, %tt%
 
-; Sleep, 1000
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-TopMask.gbr
-; Sleep, 1000
-; SendInput, {Blind} !s
-; Sleep, 1000
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-TopPaste.gbr
-; Sleep, 1000
-; SendInput, {Blind} !s
-; Sleep, 1000
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-TopCopper.gbr
-; Sleep, 1000
-; SendInput, {Blind} !s
-; Sleep, 1000
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-BottomCopper.gbr
-; Sleep, 1000
-; SendInput, {Blind} !s
-; Sleep, 1000
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-BottomPaste.gbr
-; Sleep, 2000
-; SendInput, {Blind} !s
-; Sleep, 2000
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-BottomMask.gbr
-; Sleep, 2000
-; SendInput, {Blind} !s
-; Sleep, 2000
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-BottomSilk.gbr
-; Sleep, 2000
-; SendInput, {Blind} !s
-; Sleep, 2000
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-BoardOutline.gbr
-; Sleep, 2000
-; SendInput, {Blind} !s
-; Sleep, 1000
+tt = PCB Layout
+WinWaitActive, %tt%
+SendInput, {Blind} {Enter}
+Sleep, 500
+SendInput, {Blind} {Enter}
+Sleep, 500
+SendInput, {Blind} !fe
+Sleep, 500
 
-; !s
-; Sleep, 1500
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%%LZX_PROJECT_VERSION%-TopMask.gbr!s
-; Sleep, 1500
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%%LZX_PROJECT_VERSION%-TopPaste.gbr!s
-; Sleep, 1500
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%%LZX_PROJECT_VERSION%-TopCopper.gbr!s
-; Sleep, 1500
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%%LZX_PROJECT_VERSION%-BottomCopper.gbr!s
-; Sleep, 1500
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%%LZX_PROJECT_VERSION%-BottomPaste.gbr!s
-; Sleep, 1500
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%%LZX_PROJECT_VERSION%-BottomMask.gbr!s
-; Sleep, 1500
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%%LZX_PROJECT_VERSION%-BottomSilk.gbr!s
-; Sleep, 1500
-; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%%LZX_PROJECT_VERSION%-BoardOutline.gbr!s
-; Sleep, 1500
+tt = Confirm
+WinWaitActive, %tt%
+SendInput, {Tab} {Enter}
+WinWaitClose, %tt%
 
+Run, %KICAD_PATH%
+tt = KiCad
+WinWait, %tt%
+IfWinNotActive, %tt%,, WinActivate, %tt%
+
+Sleep, 100
+MouseClick, L, 25, 38
+
+Sleep, 100
+MouseClick, L, 51, 170
+
+Sleep, 100
+MouseClick, L, 281, 172
+
+Sleep, 100
+
+tt = Import Eagle
+WinWaitActive, %tt%
+SendInput, {Blind} {BackSpace} %EXPORT_DIR%\eagle\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%.sch {Enter}
+WinWaitClose, %tt%
+
+tt = KiCad Project
+WinWaitActive, %tt%
+SendInput, {Blind} {BackSpace} %EXPORT_DIR%\kicad {Enter} {Enter}
+
+tt = kicad Information
+WinWaitActive, %tt%
+SendInput, {Blind} {Enter}
+WinWaitClose, %tt%
+
+tt = Pcbnew
+WinWaitActive, %tt%
+SendInput, {Blind} {CtrlDown}s{CtrlUp}
+Sleep, 500
+WinClose, %tt%
+WinWaitClose, %tt%
+
+tt = Eeschema
+WinWaitActive, %tt%
+SendInput, {Blind} {CtrlDown}s{CtrlUp}
+Sleep, 500
+WinClose, %tt%
+WinWaitClose, %tt%
+
+tt = KiCad
+WinWaitActive, %tt%
+WinClose, %tt%
+WinWaitClose, %tt%
 
 }
