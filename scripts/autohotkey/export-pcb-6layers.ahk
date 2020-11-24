@@ -27,65 +27,65 @@ FileCreateDir, %EXPORT_DIR%\eagle
 ; MsgBox, %LZX_PROJECT_VERSION%
 
 ; Launch Diptrace PCB & Export PCB ASCII
-Run, %DIPTRACE_PCB_PATH%
-SetTitleMatchMode, 2
-CoordMode, Mouse, Window
+; Run, %DIPTRACE_PCB_PATH%
+; SetTitleMatchMode, 2
+; CoordMode, Mouse, Window
 
-tt = PCB Layout
-WinWaitActive, %tt%
-SendInput, {Blind} !fo
-tt = Open
-WinWaitActive, %tt%
-SendInput, {Blind} %PCB_FILE% {Enter}
-tt = PCB Layout
-WinWaitActive, %tt%
-SendInput, {Blind} !fxd
-tt = Save As
-WinWaitActive, %tt%
-SendInput, {Blind} {BackSpace} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout.asc!s
-Sleep, 2000
-SendInput, {Blind} {Enter}
-WinWaitClose, %tt%
-tt = PCB Layout
-WinWaitActive, %tt%
-WinClose, %tt%
-Sleep, 100
-SendInput, {Blind} {Enter}
-Sleep, 1000
+; tt = PCB Layout
+; WinWaitActive, %tt%
+; SendInput, {Blind} !fo
+; tt = Open
+; WinWaitActive, %tt%
+; SendInput, {Blind} %PCB_FILE% {Enter}
+; tt = PCB Layout
+; WinWaitActive, %tt%
+; SendInput, {Blind} !fxd
+; tt = Save As
+; WinWaitActive, %tt%
+; SendInput, {Blind} {BackSpace} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout.asc!s
+; Sleep, 2000
+; SendInput, {Blind} {Enter}
+; WinWaitClose, %tt%
+; tt = PCB Layout
+; WinWaitActive, %tt%
+; WinClose, %tt%
+; Sleep, 100
+; SendInput, {Blind} {Enter}
+; Sleep, 1000
+
+; ; Sleep, 2000
+
+; ; Launch Diptrace Schematic & Export Schematic ASCII
+; Run, %DIPTRACE_SCHEMATIC_PATH%
+; Sleep, 1000
+
+; tt = Schematic
+; WinWaitActive, %tt%
+; Sleep, 1000
+; SendInput, {Blind} !fo
+
+; tt = Open
+; WinWaitActive, %tt%
+; Sleep, 1000
+; SendInput, {Blind} %SCH_FILE% {Enter}
+
+; tt = Schematic
+; WinWaitActive, %tt%
+; SendInput, {Blind} !fxd 
+; tt = Save As
+; WinWaitActive, %tt%
+; SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic.asc!s
+; Sleep, 2000
+; SendInput, {Blind} {Enter}
+; WinWaitClose, %tt%
+
+; tt = Schematic
+; WinWaitActive, %tt%
+; SendInput, {Blind} !fe
 
 ; Sleep, 2000
-
-; Launch Diptrace Schematic & Export Schematic ASCII
-Run, %DIPTRACE_SCHEMATIC_PATH%
-Sleep, 1000
-
-tt = Schematic
-WinWaitActive, %tt%
-Sleep, 1000
-SendInput, {Blind} !fo
-
-tt = Open
-WinWaitActive, %tt%
-Sleep, 1000
-SendInput, {Blind} %SCH_FILE% {Enter}
-
-tt = Schematic
-WinWaitActive, %tt%
-SendInput, {Blind} !fxd 
-tt = Save As
-WinWaitActive, %tt%
-SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic.asc!s
-Sleep, 2000
-SendInput, {Blind} {Enter}
-WinWaitClose, %tt%
-
-tt = Schematic
-WinWaitActive, %tt%
-SendInput, {Blind} !fe
-
-Sleep, 2000
-SendInput, {Blind} {Enter}
-Sleep, 2000
+; SendInput, {Blind} {Enter}
+; Sleep, 2000
 ; FileRead, SchematicASCII, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic.asc
 ; StringReplace, SchematicASCIIM, SchematicASCII, LZXNAME, %LZX_PROJECT_NAME%, All
 ; StringReplace, SchematicASCIIM, SchematicASCIIM, LZXVERSION, %LZX_PROJECT_VERSION%, All
@@ -102,13 +102,17 @@ Run, %DIPTRACE_SCHEMATIC_PATH%
 Sleep, 2000
 tt = Schematic
 WinWaitActive, %tt%  
-SendInput, {Blind} !fid 
+;SendInput, {Blind} !fid 
+SendInput, {Blind} !fo 
+
 Sleep, 2000
 tt = Open
 WinWaitActive, %tt%
 SendInput, {Blind} !n
 Sleep, 500
-SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic-modified.asc {Enter}
+;SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic-modified.asc {Enter}
+SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%.dch {Enter}
+
 
 tt = Schematic
 WinWaitActive, %tt%
@@ -156,11 +160,14 @@ Run, %DIPTRACE_PCB_PATH%
 
 tt = PCB Layout
 WinWaitActive, %tt%
+;SendInput, {Blind} !fid
 SendInput, {Blind} !fid
 
 tt = Open
 WinWaitActive, %tt%
-SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout-modified.asc {Enter}
+;SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout-modified.asc {Enter}
+SendInput, {Blind} %EXPORT_DIR%\%LZX_PROJECT_NAME%.dip {Enter}
+
 WinWaitClose, %tt%
 
 tt = PCB Layout
