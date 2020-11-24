@@ -86,17 +86,17 @@ SendInput, {Blind} !fe
 Sleep, 2000
 SendInput, {Blind} {Enter}
 Sleep, 2000
-FileRead, SchematicASCII, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic.asc
-StringReplace, SchematicASCIIM, SchematicASCII, LZXNAME, %LZX_PROJECT_NAME%, All
-StringReplace, SchematicASCIIM, SchematicASCIIM, LZXVERSION, %LZX_PROJECT_VERSION%, All
-FileDelete, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic-modified.asc
-FileAppend, %SchematicASCIIM%, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic-modified.asc
-FileRead, PCBASCII, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout.asc
-StringReplace, PCBASCIIM, PCBASCII, LZXNAME, %LZX_PROJECT_NAME%, All
-StringReplace, PCBASCIIM, PCBASCIIM, LZXVERSION, %LZX_PROJECT_VERSION%, All
-FileDelete, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout-modified.asc
-FileAppend, %PCBASCIIM%, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout-modified.asc
-Sleep, 2000
+; FileRead, SchematicASCII, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic.asc
+; StringReplace, SchematicASCIIM, SchematicASCII, LZXNAME, %LZX_PROJECT_NAME%, All
+; StringReplace, SchematicASCIIM, SchematicASCIIM, LZXVERSION, %LZX_PROJECT_VERSION%, All
+; FileDelete, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic-modified.asc
+; FileAppend, %SchematicASCIIM%, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-schematic-modified.asc
+; FileRead, PCBASCII, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout.asc
+; StringReplace, PCBASCIIM, PCBASCII, LZXNAME, %LZX_PROJECT_NAME%, All
+; StringReplace, PCBASCIIM, PCBASCIIM, LZXVERSION, %LZX_PROJECT_VERSION%, All
+; FileDelete, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout-modified.asc
+; FileAppend, %PCBASCIIM%, %EXPORT_DIR%\%LZX_PROJECT_NAME%-%LZX_PROJECT_VERSION%-pcb-layout-modified.asc
+; Sleep, 2000
 ; Re-Import ASCII Schematic
 Run, %DIPTRACE_SCHEMATIC_PATH%
 Sleep, 2000
