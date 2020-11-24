@@ -99,7 +99,6 @@ FileCreateDir, %EXPORT_DIR%\eagle
 ; Sleep, 2000
 ; Re-Import ASCII Schematic
 Run, %DIPTRACE_SCHEMATIC_PATH%
-Sleep, 2000
 tt = Schematic
 WinWaitActive, %tt%  
 ;SendInput, {Blind} !fid 
@@ -157,11 +156,10 @@ WinWaitClose, %tt%
 
 ; Launch Diptrace PCB & Import PCB ASCII
 Run, %DIPTRACE_PCB_PATH%
-
 tt = PCB Layout
 WinWaitActive, %tt%
 ;SendInput, {Blind} !fid
-SendInput, {Blind} !fid
+SendInput, {Blind} !fo
 
 tt = Open
 WinWaitActive, %tt%
