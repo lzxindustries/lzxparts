@@ -144,10 +144,10 @@ tt = Schematic
 WinWaitActive, %tt%
 SendInput, {Blind} !fe
 Sleep, 500
-SendInput, {Blind} n
-Sleep, 500
-SendInput, {Blind} {Tab 3} {Enter}
-WinWaitClose, %tt%
+; SendInput, {Blind} n
+; Sleep, 500
+; SendInput, {Blind} {Tab 3} {Enter}
+; WinWaitClose, %tt%
 ; SendInput, {Blind} !fe
 
 ; tt = Confirm
@@ -322,15 +322,15 @@ Sleep, 500
 SendInput, {Blind} !fe
 Sleep, 500
 
-tt = Confirm
-WinWaitActive, %tt%
-SendInput, {Tab} {Enter}
-WinWaitClose, %tt%
+; tt = Confirm
+; WinWaitActive, %tt%
+; SendInput, {Tab} {Enter}
+; ;WinWaitClose, %tt%
+; Sleep, 500
 
 Run, %KICAD_PATH%
 tt = KiCad
-WinWait, %tt%
-IfWinNotActive, %tt%,, WinActivate, %tt%
+WinWaitActive, %tt%
 
 Sleep, 100
 MouseClick, L, 25, 38
